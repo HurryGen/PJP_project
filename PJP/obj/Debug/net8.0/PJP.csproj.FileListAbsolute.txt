@@ -1,0 +1,17 @@
+D:\Projects\PJP\PJP\bin\Debug\net8.0\PJP.exe
+D:\Projects\PJP\PJP\bin\Debug\net8.0\PJP.deps.json
+D:\Projects\PJP\PJP\bin\Debug\net8.0\PJP.runtimeconfig.json
+D:\Projects\PJP\PJP\bin\Debug\net8.0\PJP.dll
+D:\Projects\PJP\PJP\bin\Debug\net8.0\PJP.pdb
+D:\Projects\PJP\PJP\bin\Debug\net8.0\Antlr4.Runtime.Standard.dll
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.csproj.AssemblyReference.cache
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.AssemblyInfoInputs.cache
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.AssemblyInfo.cs
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.csproj.CoreCompileInputs.cache
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.csproj.Up2Date
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.dll
+D:\Projects\PJP\PJP\obj\Debug\net8.0\refint\PJP.dll
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.pdb
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.genruntimeconfig.cache
+D:\Projects\PJP\PJP\obj\Debug\net8.0\ref\PJP.dll
