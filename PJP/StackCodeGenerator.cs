@@ -507,49 +507,38 @@ public class StackCodeGenerator : LanguageBaseVisitor<string>
     {
         string fileName = context.expression().GetText();
         string name = context.IDENTIFIER().GetText();
-            
+        
+        
+        Console.WriteLine($"push S {fileName}");
+        output.Add($"push S {fileName}");
 
-        Console.WriteLine($"fopen {fileName}");
-        output.Add($"fopen {fileName}");
+        Console.WriteLine($"fopen");
+        output.Add($"fopen");
 
         Console.WriteLine($"save {name}");
         output.Add($"save {name}");
 
         return null;
     }
-    
-    public override string VisitFileOutputExpr(LanguageParser.FileOutputExprContext context)
+
+    public override string VisitFappendStatement(LanguageParser.FappendStatementContext context)
     {
-        List<ParserRuleContext> expressions = new List<ParserRuleContext>();
-        ParserRuleContext current = context;
+        string fileVar = context.IDENTIFIER().GetText();
 
         
-        while (current is LanguageParser.FileOutputExprContext fileCtx)
+        Console.WriteLine($"load {fileVar}");
+        output.Add($"load {fileVar}");
+        int count = 1;
+        foreach (var expr in context.expressionList().expression())
         {
-            expressions.Insert(0, fileCtx.expression(1)); 
-            current = fileCtx.expression(0);
+            Visit(expr);
+            count++;
         }
-
         
-        if (current is LanguageParser.VariableExprContext varExpr)
-        {
-            string fileVar = varExpr.IDENTIFIER().GetText();
-            Console.WriteLine($"load {fileVar}");
-            output.Add($"load {fileVar}");
-        }
-
+        Console.WriteLine($"fappend {count}");
+        output.Add($"fappend {count}");
         
-        for (int i = 0; i < expressions.Count; i++)
-        {
-            Visit(expressions[i]);
-            Console.WriteLine("fappend");
-            output.Add("fappend");
-        }
-
-        
-        Console.WriteLine("pop");
-        output.Add("pop");
-
         return null;
     }
+    
 }

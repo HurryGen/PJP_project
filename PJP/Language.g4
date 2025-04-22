@@ -11,6 +11,7 @@ statement
     | readStatement
     | writeStatement
     | fopenStatement
+    | fappendStatement
     | block
     | ifStatement
     | whileStatement
@@ -25,6 +26,7 @@ variableList: IDENTIFIER (',' IDENTIFIER)* ;
 readStatement: 'read' variableList ';' ;
 writeStatement: 'write' expressionList ';' ;
 fopenStatement: 'fopen' IDENTIFIER expression ';';
+fappendStatement: 'fappend' IDENTIFIER ',' expressionList ';';
 
 // Blocks
 block: '{' statement* '}' ;

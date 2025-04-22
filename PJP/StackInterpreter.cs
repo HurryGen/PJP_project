@@ -105,7 +105,7 @@ public class StackInterpreter
                     HandleFopen(parts);
                     break;
                 case "fappend":
-                    HandleFappend();
+                    HandleFappend(parts);
                     break;
                 default:
                     Console.WriteLine("Unknown instruction: " + instruction);
@@ -412,20 +412,27 @@ public class StackInterpreter
     
     private void HandleFopen(string[] parts)
     {
-        var fileName = parts[1].Trim('"');
+        var fileName = stack.Pop().ToString().Trim('"');
         
         File.Create(fileName).Close();
         stack.Push(fileName);
     }
     
-    private void HandleFappend()
+    private void HandleFappend(string[] parts)
     {
-        var content = stack.Pop();
-        var fileIdentifier = stack.Pop();
+        int count = int.Parse(parts[1]);
 
+        var items = new List<object>();
+        for (int i = 0; i < count; i++)
+        {
+            items.Add(stack.Pop());
+        }
+
+        items.Reverse(); 
+
+        var fileIdentifier = items[0];
         string fileName;
 
-        
         if (fileIdentifier is string varName && variables.ContainsKey(varName))
         {
             fileName = variables[varName].ToString();
@@ -434,8 +441,13 @@ public class StackInterpreter
         {
             fileName = fileIdentifier.ToString();
         }
-        stack.Push(fileIdentifier);
-        File.AppendAllText(fileName, content.ToString() + Environment.NewLine);
+
+        for (int i = 1; i < items.Count; i++) 
+        {
+            File.AppendAllText(fileName, items[i].ToString() + Environment.NewLine);
+        }
+
+        stack.Push(fileIdentifier); 
     }
 }
 

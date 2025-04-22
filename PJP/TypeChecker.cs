@@ -250,7 +250,7 @@ public class TypeChecker : LanguageBaseVisitor<string>
         Visit(context.statement());
         return null;
     }
-    public override string VisitFopenStatement(LanguageParser.FopenStatementContext context)
+    /*public override string VisitFopenStatement(LanguageParser.FopenStatementContext context)
     {
         string fileNameType = Visit(context.expression());
         string varName = context.IDENTIFIER().GetText();
@@ -273,9 +273,9 @@ public class TypeChecker : LanguageBaseVisitor<string>
         }
 
         return null;
-    }
+    }*/
     
-    public override string VisitFileOutputExpr(LanguageParser.FileOutputExprContext context)
+    /*public override string VisitFileOutputExpr(LanguageParser.FileOutputExprContext context)
     {
         string left = Visit(context.expression(0));
         string right = Visit(context.expression(1));
@@ -293,7 +293,7 @@ public class TypeChecker : LanguageBaseVisitor<string>
         }
 
         return "file"; 
-    }
+    }*/
 
    
     
