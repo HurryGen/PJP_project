@@ -37,6 +37,8 @@ public class StackCodeGenerator : LanguageBaseVisitor<string>
                     Console.WriteLine($"push B false");
                     output.Add($"push B false");
                     break;
+                case "file":
+                    return null;
             }
 
             Console.WriteLine($"save {name}");
@@ -84,7 +86,7 @@ public class StackCodeGenerator : LanguageBaseVisitor<string>
             valueType = "float";
         }
 
-        // Uložení výsledku výrazu do všech proměnných
+        
         for (int i = targets.Count - 1; i >= 0; i--)
         {
             if (i < targets.Count - 1)
@@ -160,7 +162,7 @@ public class StackCodeGenerator : LanguageBaseVisitor<string>
         string right = Visit(context.expression(1));
         string op = context.GetChild(1).GetText();
 
-        // Apply itof if necessary
+       
         if (left == "int" && right == "float")
         {
             Console.WriteLine("itof");
@@ -500,6 +502,54 @@ public class StackCodeGenerator : LanguageBaseVisitor<string>
 
         return null;
     }
+
+    public override string VisitFopenStatement(LanguageParser.FopenStatementContext context)
+    {
+        string fileName = context.expression().GetText();
+        string name = context.IDENTIFIER().GetText();
+            
+
+        Console.WriteLine($"fopen {fileName}");
+        output.Add($"fopen {fileName}");
+
+        Console.WriteLine($"save {name}");
+        output.Add($"save {name}");
+
+        return null;
+    }
     
-    
+    public override string VisitFileOutputExpr(LanguageParser.FileOutputExprContext context)
+    {
+        List<ParserRuleContext> expressions = new List<ParserRuleContext>();
+        ParserRuleContext current = context;
+
+        
+        while (current is LanguageParser.FileOutputExprContext fileCtx)
+        {
+            expressions.Insert(0, fileCtx.expression(1)); 
+            current = fileCtx.expression(0);
+        }
+
+        
+        if (current is LanguageParser.VariableExprContext varExpr)
+        {
+            string fileVar = varExpr.IDENTIFIER().GetText();
+            Console.WriteLine($"load {fileVar}");
+            output.Add($"load {fileVar}");
+        }
+
+        
+        for (int i = 0; i < expressions.Count; i++)
+        {
+            Visit(expressions[i]);
+            Console.WriteLine("fappend");
+            output.Add("fappend");
+        }
+
+        
+        Console.WriteLine("pop");
+        output.Add("pop");
+
+        return null;
+    }
 }

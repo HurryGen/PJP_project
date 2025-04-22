@@ -6,17 +6,30 @@ public class StackInterpreter
 {
     private Stack<object> stack = new Stack<object>();
     private Dictionary<string, object> variables = new Dictionary<string, object>();
+    private Dictionary<string, int> labels = new Dictionary<string, int>();
 
     public void Execute(string filePath)
     {
         var lines = File.ReadAllLines(filePath);
-
-        foreach (var line in lines)
+        for (int i = 0; i < lines.Length; i++)
         {
-            var parts = line.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 0) continue; // Skip empty lines
+            var line = lines[i].Trim();
+            
+            if (line.StartsWith("label "))
+            {
+                var labelName = line.Substring(6);
+                labels[labelName] = i; 
+            }
+        }
 
-            var instruction = parts[0];
+        int index = 0; 
+        while (index < lines.Length)
+        {
+            var line = lines[index].Trim();
+            var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) { index++; continue; } 
+
+            var instruction = parts[0].ToLower();
 
             switch (instruction.ToLower())
             {
@@ -75,21 +88,30 @@ public class StackInterpreter
                     HandleSave(parts);
                     break;
                 case "label":
-                    break; // Labels are only used for jumping, so we ignore them for now
+                    break; 
                 case "jmp":
-                    break; // Jump handling is omitted in this example
+                    HandleJmp(parts);
+                    break;
                 case "fjmp":
-                    break; // Conditional jump handling is omitted in this example
+                    HandleFjmp(parts);
+                    break;
                 case "print":
                     HandlePrint(parts);
                     break;
                 case "read":
                     HandleRead(parts);
                     break;
+                case "fopen":
+                    HandleFopen(parts);
+                    break;
+                case "fappend":
+                    HandleFappend();
+                    break;
                 default:
                     Console.WriteLine("Unknown instruction: " + instruction);
                     break;
             }
+            index++;
         }
     }
 
@@ -104,7 +126,6 @@ public class StackInterpreter
                 stack.Push(int.Parse(value));
                 break;
             case "f":
-                // Use InvariantCulture to avoid locale-related issues
                 stack.Push(float.Parse(value, System.Globalization.CultureInfo.InvariantCulture));
                 break;
             case "s":
@@ -209,7 +230,7 @@ public class StackInterpreter
     {
         var a = stack.Pop().ToString();
         var b = stack.Pop().ToString();
-        stack.Push(b + a); // String concatenation
+        stack.Push(b + a); 
     }
 
     private void HandleAnd()
@@ -308,14 +329,14 @@ public class StackInterpreter
         var count = int.Parse(parts[1]);
         var valuesToPrint = new List<object>();
 
-        // Collect the values from the stack into a list
+       
         for (int i = 0; i < count; i++)
         {
             var value = stack.Pop();
             valuesToPrint.Add(value);
         }
 
-        // Print the values in reverse order
+        
         valuesToPrint.Reverse();
         foreach (var value in valuesToPrint)
         {
@@ -347,6 +368,74 @@ public class StackInterpreter
                 Console.WriteLine("Unknown read type: " + type);
                 break;
         }
+    }
+    
+
+    private void HandleJmp(string[] parts)
+    {
+        var labelName = parts[1];
+        if (labels.ContainsKey(labelName))
+        {
+            var targetLine = labels[labelName];
+            
+            Console.WriteLine($"Jumping to label: {labelName} at line {targetLine}");
+        }
+        else
+        {
+            Console.WriteLine($"Label '{labelName}' not found.");
+        }
+    }
+    
+    private void HandleFjmp(string[] parts)
+    {
+        var labelName = parts[1];
+        var condition = (bool)stack.Pop(); 
+
+        if (condition)
+        {
+            if (labels.ContainsKey(labelName))
+            {
+                var targetLine = labels[labelName];
+              
+                Console.WriteLine($"Conditional jump to label: {labelName} at line {targetLine}");
+            }
+            else
+            {
+                Console.WriteLine($"Label '{labelName}' not found.");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Condition for label '{labelName}' not met.");
+        }
+    }
+    
+    private void HandleFopen(string[] parts)
+    {
+        var fileName = parts[1].Trim('"');
+        
+        File.Create(fileName).Close();
+        stack.Push(fileName);
+    }
+    
+    private void HandleFappend()
+    {
+        var content = stack.Pop();
+        var fileIdentifier = stack.Pop();
+
+        string fileName;
+
+        
+        if (fileIdentifier is string varName && variables.ContainsKey(varName))
+        {
+            fileName = variables[varName].ToString();
+        }
+        else
+        {
+            fileName = fileIdentifier.ToString();
+        }
+        stack.Push(fileIdentifier);
+        File.AppendAllText(fileName, content.ToString() + Environment.NewLine);
     }
 }
 

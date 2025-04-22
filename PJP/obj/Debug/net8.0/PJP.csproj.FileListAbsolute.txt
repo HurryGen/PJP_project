@@ -15,3 +15,4 @@ D:\Projects\PJP\PJP\obj\Debug\net8.0\refint\PJP.dll
 D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.pdb
 D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.genruntimeconfig.cache
 D:\Projects\PJP\PJP\obj\Debug\net8.0\ref\PJP.dll
+D:\Projects\PJP\PJP\obj\Debug\net8.0\PJP.sourcelink.json

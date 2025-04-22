@@ -43,8 +43,8 @@ expression
     | expression ('<' | '>') expression          # relExpr
     | expression ('*' | '/' | '%') expression    # mulExpr
     | expression ('+' | '-' | '.') expression    # addExpr
-    | expression '=' expression                 # assignExpr
     | expression '<<' expression            # fileOutputExpr
+    | expression '=' expression                 # assignExpr
     | '!' expression                             # notExpr
     | '-' expression                             # uminusExpr
     | '(' expression ')'                         # parensExpr
